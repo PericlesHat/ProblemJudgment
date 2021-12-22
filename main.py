@@ -144,6 +144,8 @@ if __name__ == '__main__':
                         st.header("")
                         st.subheader("本页已识别答题数：" + str(count))
                         st.subheader("正确率：" + correct_rate)
+                        st.subheader("错答数量：" + str(wrong))
+                        st.write("由于模型质量原因，以上结果仅供参考"）
 
 
                     with col2:
