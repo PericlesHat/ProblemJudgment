@@ -8,7 +8,9 @@ import sys
 import argparse
 from PIL import Image
 from image_process import imageGray
-
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 
 # def result_read(txt_path,image):
 #     with open(txt_path + '.txt', 'a') as f:
@@ -45,7 +47,7 @@ def get_detection_folder():
 
 
 if __name__ == '__main__':
-    st.title('YOLOv5 Streamlit App')
+    st.title('Problem Judgment App')
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str,
                         default='weights/yolov5s.pt', help='model.pt path(s)')
@@ -124,7 +126,7 @@ if __name__ == '__main__':
         print('valid')
         if st.button('开始检测'):
 
-            detect(opt)
+            count, wrong = detect(opt)
 
 
 
@@ -132,10 +134,36 @@ if __name__ == '__main__':
                 with st.spinner(text='Preparing Images'):
                     detect_folder = str(Path(f'{get_detection_folder()}'))
                     st.image(os.path.join(detect_folder, uploaded_file.name))
-                    # for img in os.listdir(get_detection_folder()):
-                    #     st.image(str(Path(f'{get_detection_folder()}') / img))
+
+                    correct_rate = (1 - (wrong / count)) * 100
+                    correct_rate = str(correct_rate) + "%"
+
+                    # 正确率
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.header("")
+                        st.subheader("本页已识别答题数：" + str(count))
+                        st.subheader("正确率：" + correct_rate)
+
+
+                    with col2:
+                        y = np.array([count - wrong, wrong])
+                        fig, ax = plt.subplots()
+
+                        ax.pie(y,
+                                labels=['Correct','Wrong'], # 设置饼图标签
+                                colors=["#65a479", "#d5695d"], # 设置饼图颜色
+                                explode=(0, 0.2), # 第二部分突出显示，值越大，距离中心越远
+                                autopct='%d%%', # 格式化输出百分比
+                            )
+
+
+                        st.pyplot(fig)
 
                     st.balloons()
+
+
+
 
 
 
