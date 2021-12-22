@@ -133,21 +133,14 @@ if __name__ == '__main__':
             if source_index == 0:
                 with st.spinner(text='Preparing Images'):
                     detect_folder = str(Path(f'{get_detection_folder()}'))
-                    st.image(os.path.join(detect_folder, uploaded_file.name))
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.image(os.path.join(detect_folder, uploaded_file.name))
 
                     correct_rate = (1 - (wrong / count)) * 100
                     correct_rate = str(correct_rate) + "%"
 
                     # 正确率
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.header("")
-                        st.subheader("本页已识别答题数：" + str(count))
-                        st.subheader("正确率：" + correct_rate)
-                        st.subheader("错答数量：" + str(wrong))
-                        st.write("由于模型质量原因，以上结果仅供参考")
-
-
                     with col2:
                         y = np.array([count - wrong, wrong])
                         fig, ax = plt.subplots()
@@ -158,9 +151,12 @@ if __name__ == '__main__':
                                 explode=(0, 0.2), # 第二部分突出显示，值越大，距离中心越远
                                 autopct='%d%%', # 格式化输出百分比
                             )
-
-
                         st.pyplot(fig)
+                        st.subheader("")
+                        st.subheader("本页已识别答题数：" + str(count))
+                        st.subheader("正确率：" + correct_rate)
+                        st.subheader("错答数量：" + str(wrong))
+                        st.write("由于模型质量原因，以上结果仅供参考")
 
                     st.balloons()
 
