@@ -5,7 +5,7 @@ streamlit~=1.2.0
 # base ----------------------------------------
 matplotlib>=3.2.2
 numpy>=1.18.5
-# opencv-python-headless>=4.1.2
+opencv-python-headless>=4.1.2
 Pillow~=8.4.0
 PyYAML>=5.3.1
 scipy>=1.4.1
@@ -31,7 +31,7 @@ pandas~=1.1.5
 thop~=0.0.31-2005241907
 pycocotools>=2.0  # COCO mAP
 
-opencv-python~=4.5.4.60
+# opencv-python~=4.5.4.60
 levenshtein~=0.16.0
 requests~=2.26.0
 
