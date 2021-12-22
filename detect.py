@@ -19,6 +19,8 @@ from PIL import Image
 from cal import getAnswer
 
 def detect(opt, save_img=False):
+    count = 0
+    wrong = 0
     source, weights, view_img, save_txt, imgsz = opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size
     save_img = not opt.nosave and not source.endswith(
         '.txt')  # save inference images
@@ -115,7 +117,7 @@ def detect(opt, save_img=False):
                     s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "
 
                 # Write results
-                count = 0
+                
                 for *xyxy, conf, cls in reversed(det):
                     count = count + 1
                     '''
@@ -166,6 +168,7 @@ def detect(opt, save_img=False):
                     flag = 1
                     if (cal_result != predict_result):
                         flag = 0
+                        wrong = wrong + 1
 
                     # 保存算式截图及其预测结果
                     img_formula.save(str(save_dir / (out_string + '.jpg')))
@@ -236,6 +239,8 @@ def detect(opt, save_img=False):
         print(f"Results saved to {save_dir}{s}")
 
     print(f'Done. ({time.time() - t0:.3f}s)')
+
+    return count, wrong
 
 
 if __name__ == '__main__':
