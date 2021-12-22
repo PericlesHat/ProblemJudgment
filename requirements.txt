@@ -35,5 +35,3 @@ opencv-python~=4.5.4.60
 levenshtein~=0.16.0
 requests~=2.26.0
 
-# streamlit deployment -------------------------
-libgl1-mesa-glx
