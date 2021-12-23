@@ -48,6 +48,8 @@ def get_detection_folder():
 
 if __name__ == '__main__':
     st.title('Problem Judgment App')
+    st.caption('')
+    st.caption('A elementary school math formula recognition & judgement, based on YOLOv5 and CRNN.')
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str,
                         default='weights/yolov5s.pt', help='model.pt path(s)')
@@ -89,56 +91,44 @@ if __name__ == '__main__':
     # 保存结果
     #opt.save_txt = True
     opt.save_conf = True
+    # source = ("图片检测", "视频检测")
+    # source_index = st.sidebar.selectbox("选择输入", range(
+    #     len(source)), format_func=lambda x: source[x])
 
-    source = ("图片检测", "视频检测")
-    source_index = st.sidebar.selectbox("选择输入", range(
-        len(source)), format_func=lambda x: source[x])
+    uploaded_file = st.sidebar.file_uploader(
+        "上传图片", type=['png', 'jpeg', 'jpg'])
+    if uploaded_file is not None:
+        is_valid = True
+        with st.spinner(text='资源加载中...'):
+            st.sidebar.image(uploaded_file)
+            picture = Image.open(uploaded_file)
+            picture = picture.save(f'data/images/{uploaded_file.name}')
+            # graycontrast
+            # im_gray = imageGray(f'data/images/{uploaded_file.name}')
+            # im_gray.save(f'data/images/{uploaded_file.name}')
 
-    if source_index == 0:
-        uploaded_file = st.sidebar.file_uploader(
-            "上传图片", type=['png', 'jpeg', 'jpg'])
-        if uploaded_file is not None:
-            is_valid = True
-            with st.spinner(text='资源加载中...'):
-                st.sidebar.image(uploaded_file)
-                picture = Image.open(uploaded_file)
-                picture = picture.save(f'data/images/{uploaded_file.name}')
-                # graycontrast
-                # im_gray = imageGray(f'data/images/{uploaded_file.name}')
-                # im_gray.save(f'data/images/{uploaded_file.name}')
-
-                opt.source = f'data/images/{uploaded_file.name}'
-        else:
-            is_valid = False
+            opt.source = f'data/images/{uploaded_file.name}'
     else:
-        uploaded_file = st.sidebar.file_uploader("上传视频", type=['mp4'])
-        if uploaded_file is not None:
-            is_valid = True
-            with st.spinner(text='资源加载中...'):
-                st.sidebar.video(uploaded_file)
-                with open(os.path.join("data", "videos", uploaded_file.name), "wb") as f:
-                    f.write(uploaded_file.getbuffer())
-                opt.source = f'data/videos/{uploaded_file.name}'
-        else:
-            is_valid = False
-
-    if is_valid:
-        print('valid')
-        if st.button('开始检测'):
-
-            count, wrong = detect(opt)
+        is_valid = False
 
 
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        
+        if is_valid:
+            print('valid')
+            if st.button('开始检测'):
 
-            if source_index == 0:
+                count, wrong = detect(opt)
+
                 with st.spinner(text='Preparing Images'):
                     detect_folder = str(Path(f'{get_detection_folder()}'))
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.image(os.path.join(detect_folder, uploaded_file.name))
+                    
+                    st.image(os.path.join(detect_folder, uploaded_file.name))
 
                     correct_rate = (1 - (wrong / count)) * 100
-                    correct_rate = str(correct_rate) + "%"
+                    correct_rate = str(round(correct_rate, 2)) + "%"
 
                     # 正确率
                     with col2:
@@ -156,19 +146,6 @@ if __name__ == '__main__':
                         st.subheader("本页已识别答题数：" + str(count))
                         st.subheader("正确率：" + correct_rate)
                         st.subheader("错答数量：" + str(wrong))
-                        st.write("由于模型质量原因，以上结果仅供参考")
-
-                    st.balloons()
-
-
-
-
-
-
-
-            else:
-                with st.spinner(text='Preparing Video'):
-                    for vid in os.listdir(get_detection_folder()):
-                        st.video(str(Path(f'{get_detection_folder()}') / vid))
+                        st.caption("由于模型质量原因，以上结果仅供参考")
 
                     st.balloons()
