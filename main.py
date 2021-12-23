@@ -58,9 +58,9 @@ if __name__ == '__main__':
     parser.add_argument('--img-size', type=int, default=640,
                         help='inference size (pixels)')
     parser.add_argument('--conf-thres', type=float,
-                        default=0.60, help='object confidence threshold')
+                        default=0.70, help='object confidence threshold')
     parser.add_argument('--iou-thres', type=float,
-                        default=0.45, help='IOU threshold for NMS')
+                        default=0.15, help='IOU threshold for NMS')
     parser.add_argument('--device', default='',
                         help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
     parser.add_argument('--view-img', action='store_true',
